@@ -1,9 +1,12 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
 
         //Product(String name, int price, String category, String description, int status, int stock) {
         Product GalaxyZflip7 = new Product("Galaxy Zflip 7", 1485000, "Electronics", "갤럭시 Z플립 7", 1, 10);
@@ -20,8 +23,12 @@ public class Main {
         productList.add(GalaxyBuds);
         productList.add(MacBookAir13);
 
-        Printer.printStart();
-        Printer.printList(productList);
+        while(true){
+            Printer.printStart();
+            Printer.printList(productList);
+            Printer.printZero();
+            if(sc.nextInt() == 0) break;
+        }
         Printer.printEnd();
     }
 

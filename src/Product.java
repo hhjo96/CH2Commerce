@@ -10,7 +10,7 @@ public class Product {
     private int stock = 0;
 
     Product(String name, int price, String category, String description, int status, int stock) {
-        this.num = productNum++;
+        this.num = ++productNum;
         this.name = name;
         this.price = price;
         this.category = category;
