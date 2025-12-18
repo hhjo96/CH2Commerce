@@ -4,6 +4,7 @@
 
 ```mermaid
 classDiagram
+    direction TB
     class Product {
         -int num
         -String name
