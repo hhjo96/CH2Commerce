@@ -7,7 +7,6 @@ public class CommerceSystem {
     Scanner sc = new Scanner(System.in);
     Map<Integer, Category> categoryMap = new HashMap<>();
     Map<Integer, Product> productMap = new HashMap<>();
-    Map<Product, Category> productCategoryMap = new HashMap<>();
 
     public CommerceSystem() {
     }
@@ -65,16 +64,9 @@ public class CommerceSystem {
             }
         }
     }
-// 이 아래 두 함수를 합치고싶음!! 메인함수가 너무 길어져서
     public void add(List<Category>categoryList, List<Product> product) {
-        for(int i = 0; i < product.size(); i++) {
-            productMap.put(product.get(i).getNum(), product.get(i));
-        }
-
-        for(int i = 0; i < categoryList.size(); i++) {
-            categoryMap.put(categoryList.get(i).getNum(), categoryList.get(i));
-        }
-
+        categoryList.forEach(c -> categoryMap.put(c.getNum(), c));
+        product.forEach(p -> productMap.put(p.getNum(), p));
 
     }
 

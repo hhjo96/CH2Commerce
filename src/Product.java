@@ -6,16 +6,15 @@ public class Product {
     private int price = -1;
     private String category = "";
     private String description = "";
-    private int status = 0; // 0 미사용/ 1 사용
+    private boolean status = true; //
     private int stock = 0;
 
-    Product(String name, int price, String category, String description, int status, int stock) {
+    Product(String name, int price, String category, String description, int stock) {
         this.num = ++productNum;
         this.name = name;
         this.price = price;
         this.category = category;
         this.description = description;
-        this.status = status;
         this.stock = stock;
     }
     public int getNum() {
@@ -38,7 +37,7 @@ public class Product {
         return this.description;
     }
 
-    public int getStatus() {
+    public boolean getStatus() {
         return this.status;
     }
 
@@ -60,4 +59,5 @@ public class Product {
     public String toString() {//상품을 양식에 맞게 출력
         return String.format("%-2d. %-18s | %,15d원 | %-15s | %-15s | %-5d", this.getNum(), this.getName(), this.getPrice(), this.getCategory(), this.getDescription(), this.getStock());
     }
+
 }
