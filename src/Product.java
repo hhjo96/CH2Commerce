@@ -57,7 +57,7 @@ public class Product {
     //String name, int price, String category, String description, int status, int stock
 
     @Override
-    public String toString() {
-        return String.format("%-2d. %-15s | %,15d원 | %-15s | %-15s | %-5d", this.getNum(), this.getName(), this.getPrice(), this.getCategory(), this.getDescription(), this.getStock());
+    public String toString() {//상품을 양식에 맞게 출력
+        return String.format("%-2d. %-18s | %,15d원 | %-15s | %-15s | %-5d", this.getNum(), this.getName(), this.getPrice(), this.getCategory(), this.getDescription(), this.getStock());
     }
 }
