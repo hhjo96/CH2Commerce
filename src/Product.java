@@ -50,6 +50,9 @@ public class Product {
     }
 
     public void minusStock(int count) {
+        if(this.stock < count) {
+            System.err.println("실행할 수 없습니다. 재고가 부족합니다. 현재 재고: "+ this.getStock());
+        }
         this.stock -= count;
     }
 

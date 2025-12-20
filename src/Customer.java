@@ -13,6 +13,9 @@ public class Customer {
         }
 
 
+        public int getNum() {
+            return this.num;
+        }
         public String getName() {
             return this.name;
         }
@@ -23,7 +26,4 @@ public class Customer {
             return this.rating;
         }
 
-//        public List<Order> getOrderList() {
-//
-//        }
 }
