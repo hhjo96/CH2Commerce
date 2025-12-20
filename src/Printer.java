@@ -41,4 +41,28 @@ public class Printer {
         System.out.printf("%-20s | %13s |", "0.", "뒤로가기");
         System.out.println();
     }
+
+    public static void printToCart() {
+        System.out.println("위 상품을 장바구니에 추가하시겠습니까?");
+        System.out.printf("%-20s | %13s |","1. 확인", "2. 취소");
+        System.out.println();
+    }
+
+    public static void printOrderList() {
+        System.out.println("주문 관리");
+        System.out.printf("%-20s | %13s |\n", "4. 장바구니 확인", "장바구니를 확인 후 주문합니다.");
+        System.out.printf("%-20s | %13s |\n", "5. 주문 취소", "진행 중인 주문을 취소합니다.");
+    }
+
+    public static void printCartDetail() {
+        System.out.println("아래와 같이 주문 하시겠습니까?");
+        System.out.println("[ 장바구니 내역] ");
+    }
+    public static void printTotalPrice(){
+        System.out.println("[ 총 주문 금액 ]");
+    }
+
+    public static void printOrderOrBack() {
+        System.out.printf("%-20s | %13s |","1. 주문 확정", "2. 메인으로 돌아가기");
+    }
 }
