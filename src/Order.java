@@ -78,6 +78,8 @@ public class Order {
 
     public void cancelOrder(int num) {
 
+
+        cart = new ShoppingCart(customer);
         //주문시 주문전 상태로 변경, 주문상품의 재고 늘리고, 카트는 그대로 빈칸으로 두고, 가격 계산하기
 
         // 주문번호 검증
@@ -98,7 +100,6 @@ public class Order {
             int count = entry.getValue();
 
             product.plusStock(count);// 재고 복구
-            cart = new ShoppingCart(customer);
             cart.putProductToCart(product, count); // 카트로 복귀
         }
 
@@ -111,10 +112,12 @@ public class Order {
     }
 
     public void clear(){
-        this.setTotalPrice(0);
-        this.cart.clear();
-        this.products.clear();
-        this.setStatus(false);
+        if(cart != null) {
+            this.setTotalPrice(0);
+            this.cart.clear();
+            this.products.clear();
+            this.setStatus(false);
+        }
     }
 
     public boolean isEmpty(){

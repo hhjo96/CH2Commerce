@@ -4,16 +4,21 @@ import java.util.List;
 public class Printer {
 
     public static void printProductList(Collection<Product> productList) {// 전체 상품 출력
+
+        if(productList.isEmpty()){
+            System.out.println("상품 내역이 없습니다.");
+            return;
+        }
         for(Product p: productList){
-            System.out.println(p);
+            if(p.getStatus()) {
+                System.out.println(p);
+            }
         }
     }
 
     public static void printSelectedCategoryProductList(Category category) {//카테고리에 맞는 상품만 출력
         List<Product> products = category.getProducts();
-        for(Product p: products) {
-            System.out.println(p);
-        }
+        printProductList(products);
     }
 
     public static void printCategoryList(Collection<Category> categoryList) {//전체 카테고리 출력
@@ -72,4 +77,25 @@ public class Printer {
         System.out.printf("%-20s | %13s |","1. 주문 확정", "2. 메인으로 돌아가기");
         System.out.println();
     }
+
+     static void printAdmin() {
+        System.out.printf("%-20s |\n", "6. 관리자 모드");
+    }
+     static void printAdminMenu(){
+        System.out.println("[ 관리자 모드 ]");
+        System.out.printf("%-20s |\n", "1. 상품 추가");
+        System.out.printf("%-20s |\n", "2. 상품 수정");
+        System.out.printf("%-20s |\n", "3. 상품 삭제");
+        System.out.printf("%-20s |\n", "4. 전체 상품 현황");
+        System.out.printf("%-20s |\n", "0. 메인으로 돌아가기");
+    }
+
+     static void printAdminAddProduct(Collection<Category> categoryList){
+        System.out.println("어느 카테고리에 상품을 추가하시겠습니까?");
+        for(Category c: categoryList){
+            System.out.println(c.getNum() + ". "+ c.getName());
+        }
+    }
+
+
 }
