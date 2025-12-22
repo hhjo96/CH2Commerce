@@ -24,6 +24,9 @@ public class CommerceSystem {
     public Map<Integer, Category> getCategoryMap() {
         return this.categoryMap;
     }
+    public ShoppingCart getCart() {
+        return this.cart;
+    }
 
     public int intInputCheck(){ // 양수 숫자인지 체크
         int answer = 0;
@@ -70,7 +73,7 @@ public class CommerceSystem {
                     Printer.printEnd();
                     return;
                 case 4:
-                    if ((cart.isEmpty()) ) { // 장바구니 상품 없을 때
+                    if (cart.isEmpty() || cart == null ) { // 장바구니 상품 없을 때
                         System.out.println("올바른 번호를 입력해주세요.");
                         break;
                     } else {// 장바구니 상품이 있을 때 장바구니 확인
@@ -136,10 +139,14 @@ public class CommerceSystem {
                                 System.out.println("재고가 부족합니다. 장바구니에 담을 수 없습니다.");
                                 break;
                             }
-
-                            cart.putProductToCart(selectedProduct, 1);
-                            System.out.println(selectedProduct.getName() + "가 장바구니에 추가되었습니다.");
-                            continue;
+                            if(selectedProduct.getStatus()) {
+                                cart.putProductToCart(selectedProduct, 1);
+                                System.out.println(selectedProduct.getName() + "가 장바구니에 추가되었습니다.");
+                                continue;
+                            } else { // selectedProduct.status == false 인 경우
+                                System.out.println("장바구니에 담을 수 없는 상품입니다.");
+                                continue;
+                            }
 
                         } else {
                             System.out.println("올바른 번호를 입력해주세요.");
@@ -147,40 +154,44 @@ public class CommerceSystem {
                         }
                     }
                 case 6: // 관리자모드
-                    System.out.println("관리자 비밀번호를 입력해주세요: ");
-                    String adminPassword = sc.nextLine();
-                    if(adminPassword.equals("admin123")) {
-                        Administrator admin = new Administrator(this);
-                        Printer.printAdminMenu(); // 관리자 메뉴들 출력
-                        int answer4 = intInputCheck();
-                        switch(answer4) {
-                            case 1: //상품 추가
-                                admin.adminAddProduct(this,sc);
-                                break;
-                            case 2: //상품 수정
-                                admin.modifyProduct(this, sc);
-                                break;
-                            case 3: //상품 삭제
-                            case 4: //전체 상품 현황
-                            case 0: //메인으로 돌아가기
-                                System.out.println("메인 메뉴로 돌아갑니다.");
-                                break;
-                            default:
-                                System.out.println("올바른 번호를 입력해주세요.");
-                                break;
-                        }
-                        continue;
+                    while(true) {
+                        int i = 0;
+                        if(i == 3) break;
+                        System.out.println("관리자 비밀번호를 입력해주세요: ");
+                        String adminPassword = sc.nextLine();
+                        if (adminPassword.equals("admin123")) {
+                            Administrator admin = new Administrator(this);
+                            Printer.printAdminMenu(); // 관리자 메뉴들 출력
+                            int answer4 = intInputCheck();
+                            switch (answer4) {
+                                case 1: //상품 추가
+                                    admin.adminAddProduct(this, sc);
+                                    break;
+                                case 2: //상품 수정
+                                    admin.modifyProduct(this, sc);
+                                    break;
+                                case 3: //상품 삭제
+                                    admin.deleteProduct(this, sc);
+                                    break;
+                                case 4: //전체 상품 현황
+                                    Printer.printProductList(productMap.values());
+                                    break;
+                                case 0: //메인으로 돌아가기
+                                    System.out.println("메인 메뉴로 돌아갑니다.");
+                                    break;
+                                default:
+                                    System.out.println("올바른 번호를 입력해주세요.");
+                            }
 
-                    } else {
-                        System.out.println("비밀번호가 틀렸습니다.");
-                        continue;
+                        } else {
+                            System.out.println("비밀번호가 틀렸습니다.");
+                            i++;
+                        }
+                        break;
                     }
+                    break;
                 default: // 카테고리 번호 잘못 입력
                     System.out.println("올바른 번호를 입력해주세요.  ");
-
-
-
-
             }
         }
     }

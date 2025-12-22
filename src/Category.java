@@ -7,7 +7,7 @@ public class Category {
         private int num;
         private String name;
         private List<Product> products = new ArrayList<>();
-        //카테고리의 미사용 처리 변수도 필요한가?
+        //카테고리의 미사용 처리 변수도 필요한가? 일단 카테고리 삭제 기능이 없으므로 만들지 않음
 
         Category(String name) {
             this.num = ++categoryNum;
@@ -33,7 +33,7 @@ public class Category {
         }
 
         public Product findProductByNum(int num) {//카테고리를 받아서 상품리스트 리턴
-            return this.products.stream().filter(p -> p.getNum() == num).findFirst().orElse(null);
+            return this.products.stream().filter(p -> p.getNum() == num && p.getStatus()).findFirst().orElse(null);
 
         }
 }

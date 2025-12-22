@@ -53,6 +53,9 @@ public class Product {
     public void setDescription(String description) {
         this.description = description;
     }
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
     public void setStock(int stock) {
         this.stock = stock;
@@ -65,6 +68,7 @@ public class Product {
     public void minusStock(int count) {
         if (this.stock < count) {
             System.err.println("실행할 수 없습니다. 재고가 부족합니다. 현재 재고: " + this.getStock());
+            return;
         }
         this.stock -= count;
     }
@@ -73,7 +77,8 @@ public class Product {
 
     @Override
     public String toString() {//상품을 양식에 맞게 출력
-        return String.format("%-2d. %-18s | %,15d원 | %-15s | %-15s | %-5d", this.getNum(), this.getName(), this.getPrice(), this.getCategory(), this.getDescription(), this.getStock());
+        if (this.getStatus()) {
+            return String.format("%-2d. %-18s | %,15d원 | %-15s | %-15s | %-5d", this.getNum(), this.getName(), this.getPrice(), this.getCategory(), this.getDescription(), this.getStock());
+        } else return "";
     }
-
 }

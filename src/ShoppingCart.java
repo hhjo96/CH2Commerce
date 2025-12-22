@@ -31,8 +31,11 @@ public class ShoppingCart {
         }
         public void putProductToCart(Product p, int count) {
            //장바구니에 count 개수만큼 담기
-            this.products.put(p, this.products.getOrDefault(p, 0) + count);
-            this.totalPrice += p.getPrice() * count;
+            // 음수 처리는 input 함수에서 처리하므로 p가 삭제된 상품인 경우만 확인
+            if(p.getStatus()) {
+                this.products.put(p, this.products.getOrDefault(p, 0) + count);
+                this.totalPrice += p.getPrice() * count;
+            }
         }
         public void deleteProduct(Product p) {//장바구니의 해당상품 전체삭제
             this.products.remove(p);
@@ -48,7 +51,6 @@ public class ShoppingCart {
            this.totalPrice = 0;
         }
         public boolean isEmpty(){
-           if(this.products.isEmpty()) return true;
-           else return false;
+           return this.products.isEmpty();
         }
 }
