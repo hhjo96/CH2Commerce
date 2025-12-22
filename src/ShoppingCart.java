@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,15 +14,23 @@ public class ShoppingCart {
            this.customer = customer;
            this.num = customer.getNum();
            this.totalPrice = 0;
+           this.products = new HashMap<>();
        }
        public Map<Product, Integer> getProducts() {
            return this.products;
        }
 
+       public void setTotalPrice(int totalPrice) {
+           this.totalPrice = totalPrice;
+       }
+
         public void printCart() {
-           System.out.println(products);
+            for(Map.Entry<Product, Integer> products : products.entrySet()) {
+                System.out.println(products.getKey() + " 주문 수량: " + products.getValue());
+            }
         }
-        public void putProductToCart(Product p, int count) {//장바구니에 count 개수만큼 담기
+        public void putProductToCart(Product p, int count) {
+           //장바구니에 count 개수만큼 담기
             this.products.put(p, count);
             this.totalPrice += p.getPrice() * count;
         }
@@ -33,5 +42,13 @@ public class ShoppingCart {
         }
         public int getTotalPrice() {
             return this.totalPrice;
+        }
+        public void clear(){
+           this.products.clear();
+           this.totalPrice = 0;
+        }
+        public boolean isEmpty(){
+           if(this.products.isEmpty()) return true;
+           else return false;
         }
 }
