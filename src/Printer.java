@@ -26,7 +26,7 @@ public class Printer {
         System.out.println("커머스 플랫폼을 종료합니다.");
     }
     public static void printStart(){ // 시작 출력
-        System.out.println("실시간 커머스 플랫폼");
+        System.out.println("========== 실시간 커머스 플랫폼 ==========");
     }
 
     public static void printEndMenu() { // 0.종료를 양식에 맞게 출력
@@ -48,9 +48,15 @@ public class Printer {
         System.out.println();
     }
 
-    public static void printOrderList() {
-        System.out.println("주문 관리");
+    public static void printOrderManage(){
+        System.out.println("[ 주문 관리 ]");
+    }
+
+    public static void printCartList() {
         System.out.printf("%-20s | %13s |\n", "4. 장바구니 확인", "장바구니를 확인 후 주문합니다.");
+    }
+
+    public static void printCancelOrder() {
         System.out.printf("%-20s | %13s |\n", "5. 주문 취소", "진행 중인 주문을 취소합니다.");
     }
 
@@ -64,5 +70,6 @@ public class Printer {
 
     public static void printOrderOrBack() {
         System.out.printf("%-20s | %13s |","1. 주문 확정", "2. 메인으로 돌아가기");
+        System.out.println();
     }
 }
