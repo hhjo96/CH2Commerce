@@ -31,7 +31,7 @@ public class ShoppingCart {
         }
         public void putProductToCart(Product p, int count) {
            //장바구니에 count 개수만큼 담기
-            this.products.put(p, count);
+            this.products.put(p, this.products.getOrDefault(p, 0) + count);
             this.totalPrice += p.getPrice() * count;
         }
         public void deleteProduct(Product p) {//장바구니의 해당상품 전체삭제

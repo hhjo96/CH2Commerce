@@ -1,5 +1,4 @@
 
-import javax.sound.midi.Soundbank;
 import java.util.*;
 
 
@@ -17,6 +16,13 @@ public class CommerceSystem {
         this.cart = null;
         this.order = null;
 
+    }
+
+    public Map<Integer, Product> getProductMap() {
+        return this.productMap;
+    }
+    public Map<Integer, Category> getCategoryMap() {
+        return this.categoryMap;
     }
 
     public int intInputCheck(){ // 양수 숫자인지 체크
@@ -82,8 +88,11 @@ public class CommerceSystem {
                             }
                             cart.clear();
                             continue;
-                        } else { // 2 메인으로 돌아가기
-                            System.out.println("올바른 번호를 입력해주세요. ");
+                        } else if(answer2 == 2) { // 2 메인으로 돌아가기
+                            System.out.println("메인으로 돌아갑니다. ");
+                            break;
+                        } else {
+                            System.out.println("올바른 번호를 입력해주세요.");
                             break;
                         }
                     }
@@ -137,7 +146,35 @@ public class CommerceSystem {
                             break;
                         }
                     }
+                case 6: // 관리자모드
+                    System.out.println("관리자 비밀번호를 입력해주세요: ");
+                    String adminPassword = sc.nextLine();
+                    if(adminPassword.equals("admin123")) {
+                        Administrator admin = new Administrator(this);
+                        Printer.printAdminMenu(); // 관리자 메뉴들 출력
+                        int answer4 = intInputCheck();
+                        switch(answer4) {
+                            case 1: //상품 추가
+                                admin.adminAddProduct(this,sc);
+                                break;
+                            case 2: //상품 수정
+                                admin.modifyProduct(this, sc);
+                                break;
+                            case 3: //상품 삭제
+                            case 4: //전체 상품 현황
+                            case 0: //메인으로 돌아가기
+                                System.out.println("메인 메뉴로 돌아갑니다.");
+                                break;
+                            default:
+                                System.out.println("올바른 번호를 입력해주세요.");
+                                break;
+                        }
+                        continue;
 
+                    } else {
+                        System.out.println("비밀번호가 틀렸습니다.");
+                        continue;
+                    }
                 default: // 카테고리 번호 잘못 입력
                     System.out.println("올바른 번호를 입력해주세요.  ");
 
@@ -158,6 +195,7 @@ public class CommerceSystem {
         Printer.printStart();
         Printer.printCategoryList(categoryMap.values());
         Printer.printEndMenu();
+        Printer.printAdmin();
     }
 
     public void printSelectedCategoryProductList(Category selectedCategory){
@@ -180,6 +218,5 @@ public class CommerceSystem {
         Printer.printTotalPrice(); // 총 주문금액
         System.out.println(cart.getTotalPrice()+ "원");
     }
-
 
 }
