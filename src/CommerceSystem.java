@@ -65,7 +65,7 @@ public class CommerceSystem {
                     return;
                 case 4:
                     if ((cart.isEmpty()) ) { // 장바구니 상품 없을 때
-                        System.out.println("올바른 번호를 입력해주세요. 1");
+                        System.out.println("올바른 번호를 입력해주세요.");
                         break;
                     } else {// 장바구니 상품이 있을 때 장바구니 확인
                         printCart();
@@ -83,13 +83,13 @@ public class CommerceSystem {
                             cart.clear();
                             continue;
                         } else { // 2 메인으로 돌아가기
-                            System.out.println("올바른 번호를 입력해주세요. 1.5");
+                            System.out.println("올바른 번호를 입력해주세요. ");
                             break;
                         }
                     }
                 case 5: // 주문 취소
                     if(order.isEmpty()) {
-                        System.out.println("올바른 번호를 입력해주세요. 2");
+                        System.out.println("올바른 번호를 입력해주세요.");
                         break;
                     }
                     System.out.print("취소할 주문의 주문번호를 입력해주세요: ");
@@ -109,7 +109,7 @@ public class CommerceSystem {
                     }
                     Product selectedProduct = selectedCategory.findProductByNum(answer2);
                     if (selectedProduct == null) {
-                        System.out.println("올바른 번호를 입력해주세요. 3");
+                        System.out.println("올바른 번호를 입력해주세요.");
                         break;
                     } else {//위상품을 장바구니에 추가하시겠습니까? 1확인 2취소
                         printAddToCart(selectedProduct);
@@ -122,18 +122,24 @@ public class CommerceSystem {
                             if(cart == null) {
                                 cart = new ShoppingCart(customer);
                             }
+
+                            if(selectedProduct.getStock() <= 0) {
+                                System.out.println("재고가 부족합니다. 장바구니에 담을 수 없습니다.");
+                                break;
+                            }
+
                             cart.putProductToCart(selectedProduct, 1);
                             System.out.println(selectedProduct.getName() + "가 장바구니에 추가되었습니다.");
                             continue;
 
                         } else {
-                            System.out.println("올바른 번호를 입력해주세요. 4");
+                            System.out.println("올바른 번호를 입력해주세요.");
                             break;
                         }
                     }
 
                 default: // 카테고리 번호 잘못 입력
-                    System.out.println("올바른 번호를 입력해주세요. 5");
+                    System.out.println("올바른 번호를 입력해주세요.  ");
 
 
 
