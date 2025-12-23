@@ -40,6 +40,17 @@ public class ShoppingCart {
         public void deleteProduct(Product p) {//장바구니의 해당상품 전체삭제
             this.products.remove(p);
         }
+        public void deleteProduct(String name) {
+            boolean removed = products.entrySet().removeIf(entry -> entry.getKey().getName().contains(name));
+
+            if (!removed) {
+                System.out.println("해당 이름이 포함된 상품이 존재하지 않습니다.");
+            } else {
+                System.out.println("상품이 삭제되었습니다.");
+            }
+        }
+
+
         public Order cartToOrder() {
            return new Order(this.customer, this);
         }
