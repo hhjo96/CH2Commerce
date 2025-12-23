@@ -229,6 +229,9 @@ public class CommerceSystem {
         } else if(answer == 3 && selectedProduct.getPrice() <= 1000000) {
             System.out.println("목록에 없는 상품입니다.");
             return;
+        } else if(selectedProduct == null) {
+            System.out.println("존재하지 않는 상품입니다.");
+            return;
         }
 
         putItemtoCart(this, selectedProduct); // 한개씩만 담으니까 개수는 필요없다
