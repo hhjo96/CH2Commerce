@@ -30,6 +30,7 @@ public class CommerceSystem {
         int answer = 0;
         while(true) {
             try{
+
                 answer = sc.nextInt();
                 sc.nextLine();
                 if(answer < 0) {
@@ -37,9 +38,9 @@ public class CommerceSystem {
                 }
                 return answer;
             } catch (InputMismatchException e) {
-                System.out.println("올바른 숫자를 입력해주세요.");
+                System.out.println("올바른 숫자를 입력해주세요: ");
                 sc.nextLine();
-                return 0;
+                continue;
             }
         }
     }
@@ -74,7 +75,7 @@ public class CommerceSystem {
 
             answer1 = intInputCheck();
 
-            switch (answer1) {
+            switch (answer1) { // 123: 카테고리, 0: 종료, 4: 장바구니확인, 5: 주문취소, 6: 관리자
                 case 0://0 종료
                     Printer.printEnd();
                     return;
@@ -106,11 +107,23 @@ public class CommerceSystem {
                         } else if(answer2 == 2) { // 2 메인으로 돌아가기
                             System.out.println("메인으로 돌아갑니다. ");
                             break;
+                        } else if(answer2 == 3) { // 3 장바구니상품삭제
+                            //여기에 삭제하는 로직
+                            if(cartMap.get(customer.getNum()) != null) { // 카트에 상품이 있는경우
+                                System.out.print("장바구니 내역에서 삭제할 상품의 이름을 입력해주세요: ");
+                                String name = sc.nextLine();
+                                cartMap.get(customer.getNum()).deleteProduct(name);
+
+                            } else { // 카트에 상품이 없는경우
+                                System.out.println("장바구니가 비어있습니다!");
+
+                            }
                         } else {
                             System.out.println("올바른 번호를 입력해주세요.");
                             break;
                         }
                     }
+                    break;
                 case 5: // 주문 취소
                     System.out.print("취소할 주문의 주문번호를 입력해주세요: ");
                     int orderNum = intInputCheck();
@@ -130,7 +143,6 @@ public class CommerceSystem {
                     //1전체상품 2백마넌이하 3백마넌초과 0종료
                     printSelectedCategoryProductList(selectedCategory);
                     continue;
-
 
                 case 6: // 관리자모드
                     int i = 0;
@@ -161,12 +173,12 @@ public class CommerceSystem {
                                 default:
                                     System.out.println("올바른 번호를 입력해주세요.");
                             }
+                            break; // 관리자 작업 후 while 루프 종료
 
                         } else {
                             System.out.println("비밀번호가 틀렸습니다.");
                             i++;
                         }
-                        break;
                     }
                     break;
                 default: // 카테고리 번호 잘못 입력
@@ -250,7 +262,7 @@ public class CommerceSystem {
         System.out.print("\"");
         System.out.print(selectedProduct);
         System.out.println("\"");
-        Printer.printToCart(); // 위 상품을 장바구니에 추가하시겠습니까? 1확인 2취소
+        Printer.printToCart(); // 위 상품을 장바구니에 추가하시겠습니까? 1확인 2취소 3검색
     }
 
     public void printCart(int num){
@@ -268,36 +280,39 @@ public class CommerceSystem {
             System.out.println("올바른 번호를 입력해주세요.");
             return;
 
-        } else {//위상품을 장바구니에 추가하시겠습니까? 1확인 2취소
+        } else {//위상품을 장바구니에 추가하시겠습니까? 1확인 2취소 3상품검색
             printAddToCart(selectedProduct);
             int answer3 = intInputCheck();
 
             if (answer3 == 2) { // 2취소
                 System.out.println("취소를 선택하셨습니다.");
                 return;
-
             } else if (answer3 == 1) { // 1확인
-                if(cartMap.get(customer.getNum()) == null) { // 카트가 없는 경우
-                    myCart = new ShoppingCart(customer);
-                    cartMap.put(customer.getNum(), myCart);
-                }
-
-                if(selectedProduct.getStock() <= 0) {
-                    System.out.println("재고가 부족합니다. 장바구니에 담을 수 없습니다.");
-                    return;
-                }
-                if(selectedProduct.getStatus()) {
-                    myCart = cartMap.get(customer.getNum());
-                    myCart.putProductToCart(selectedProduct, 1);
-                    System.out.println(selectedProduct.getName() + "가 장바구니에 추가되었습니다.");
-                } else { // selectedProduct.status == false 인 경우
-                    System.out.println("장바구니에 담을 수 없는 상품입니다.");
-                }
-
+                checkCartAndPut(this.cartMap, selectedProduct);
             } else {
                 System.out.println("올바른 번호를 입력해주세요.");
                 return;
             }
+        }
+    }
+
+    public void checkCartAndPut(Map<Integer, ShoppingCart> cartMap, Product selectedProduct) {
+        ShoppingCart myCart;
+        if(cartMap.get(customer.getNum()) == null) { // 카트가 없는 경우
+            myCart = new ShoppingCart(customer);
+            cartMap.put(customer.getNum(), myCart);
+        }
+
+        if(selectedProduct.getStock() <= 0) {
+            System.out.println("재고가 부족합니다. 장바구니에 담을 수 없습니다.");
+            return;
+        }
+        if(selectedProduct.getStatus()) {
+            myCart = cartMap.get(customer.getNum());
+            myCart.putProductToCart(selectedProduct, 1);
+            System.out.println(selectedProduct.getName() + "가 장바구니에 추가되었습니다.");
+        } else { // selectedProduct.status == false 인 경우
+            System.out.println("장바구니에 담을 수 없는 상품입니다.");
         }
     }
 }

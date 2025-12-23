@@ -52,7 +52,7 @@ public class Printer {
 
     public static void printToCart() {
         System.out.println("위 상품을 장바구니에 추가하시겠습니까?");
-        System.out.printf("%-20s | %13s |","1. 확인", "2. 취소");
+        System.out.printf("%-15s | %-15s ","1. 확인", "2. 취소");
         System.out.println();
     }
 
@@ -77,7 +77,7 @@ public class Printer {
     }
 
     public static void printOrderOrBack() {
-        System.out.printf("%-20s | %13s |","1. 주문 확정", "2. 메인으로 돌아가기");
+        System.out.printf("%-15s | %-15s | %-15s","1. 주문 확정", "2. 메인으로 돌아가기", "3. 장바구니 상품 삭제");
         System.out.println();
     }
 
