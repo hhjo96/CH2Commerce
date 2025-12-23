@@ -97,5 +97,12 @@ public class Printer {
         }
     }
 
+    public static void printCustomerLevel() {
+        System.out.printf("%-20s : %-20s\n", "1. BRONZE", "0% 할인");
+        System.out.printf("%-20s : %-20s\n", "2. SILVER", "5% 할인");
+        System.out.printf("%-20s : %-20s\n", "3. GOLD", "10% 할인");
+        System.out.printf("%-20s : %-20s\n", "4. PLATINUM", "15% 할인");
+
+    }
 
 }

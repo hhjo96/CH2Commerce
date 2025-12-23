@@ -8,7 +8,7 @@ public class ShoppingCart {
        private int num;
        private Customer customer;
        private Map<Product, Integer> products; // 상품, 수량
-       private int totalPrice;
+       private double totalPrice;
 
        ShoppingCart(Customer customer) {
            this.customer = customer;
@@ -20,7 +20,7 @@ public class ShoppingCart {
            return this.products;
        }
 
-       public void setTotalPrice(int totalPrice) {
+       public void setTotalPrice(double totalPrice) {
            this.totalPrice = totalPrice;
        }
 
@@ -43,7 +43,7 @@ public class ShoppingCart {
         public Order cartToOrder() {
            return new Order(this.customer, this);
         }
-        public int getTotalPrice() {
+        public double getTotalPrice() {
             return this.totalPrice;
         }
         public void clear(){
