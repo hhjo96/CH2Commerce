@@ -5,15 +5,18 @@ public class Printer {
 
     public static void printProductList(Collection<Product> productList) {// 전체 상품 출력
 
-        if(productList.isEmpty()){
+        boolean activeProduct = productList.stream().anyMatch(Product::getStatus);// 액티브 product 가 있다면 true
+        if(productList.isEmpty() || !activeProduct){
             System.out.println("상품 내역이 없습니다.");
             return;
         }
-        for(Product p: productList){
-            if(p.getStatus()) {
-                System.out.println(p);
-            }
-        }
+        //기존 출력 함수
+//        for(Product p: productList){
+//            if(p.getStatus()) {
+//                System.out.println(p);
+//            }
+//        }
+        productList.stream().filter(Product::getStatus).forEach(System.out::println);
     }
 
     public static void printSelectedCategoryProductList(Category category) {//카테고리에 맞는 상품만 출력
