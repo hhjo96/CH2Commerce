@@ -39,6 +39,7 @@ public class CommerceSystem {
             } catch (InputMismatchException e) {
                 System.out.println("올바른 숫자를 입력해주세요.");
                 sc.nextLine();
+                return 0;
             }
         }
     }
@@ -155,7 +156,7 @@ public class CommerceSystem {
                                     Printer.printProductList(productMap.values());
                                     break;
                                 case 0: //메인으로 돌아가기
-                                    System.out.println("메인 메뉴로 돌아갑니다.");
+                                    System.out.println("메인으로 돌아갑니다. ");
                                     break;
                                 default:
                                     System.out.println("올바른 번호를 입력해주세요.");
@@ -210,6 +211,12 @@ public class CommerceSystem {
                 Printer.printSelectedCategoryOverPriceList(selectedCategory);
                 Printer.printBackMenu();
                 break;
+            case 0:
+                System.out.println("메인으로 돌아갑니다. ");
+                return;
+            default:
+                System.out.println("올바른 번호를 입력해주세요.");
+                return;
         }
 
 
@@ -223,14 +230,15 @@ public class CommerceSystem {
         selectedProduct = selectedCategory.findProductByNum(answer2);
 
         //입력했던 조건에 맞지 않는 상품 입력시 안담기
-        if(answer == 2 && selectedProduct.getPrice() > 1000000) {
+        if(selectedProduct == null) {
+            System.out.println("존재하지 않는 상품입니다.");
+            return;
+        }
+        else if(answer == 2 && selectedProduct.getPrice() > 1000000) {
             System.out.println("목록에 없는 상품입니다.");
             return;
         } else if(answer == 3 && selectedProduct.getPrice() <= 1000000) {
             System.out.println("목록에 없는 상품입니다.");
-            return;
-        } else if(selectedProduct == null) {
-            System.out.println("존재하지 않는 상품입니다.");
             return;
         }
 
@@ -258,6 +266,7 @@ public class CommerceSystem {
         Product selectedProduct = p;
         if (selectedProduct == null) {
             System.out.println("올바른 번호를 입력해주세요.");
+            return;
 
         } else {//위상품을 장바구니에 추가하시겠습니까? 1확인 2취소
             printAddToCart(selectedProduct);
@@ -265,6 +274,7 @@ public class CommerceSystem {
 
             if (answer3 == 2) { // 2취소
                 System.out.println("취소를 선택하셨습니다.");
+                return;
 
             } else if (answer3 == 1) { // 1확인
                 if(cartMap.get(customer.getNum()) == null) { // 카트가 없는 경우
@@ -286,6 +296,7 @@ public class CommerceSystem {
 
             } else {
                 System.out.println("올바른 번호를 입력해주세요.");
+                return;
             }
         }
     }
