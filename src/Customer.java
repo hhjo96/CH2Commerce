@@ -4,7 +4,7 @@ public class Customer {
         private String name;
         //private List<Order> orders
         private String email;
-        private String rating = "일반";
+        private Level level = Level.Bronze;
 
         Customer(String name, String email) {
             this.num = ++customerNum;
@@ -12,6 +12,9 @@ public class Customer {
             this.email = email;
         }
 
+        public void setLevel(Level level) {
+            this.level = level;
+        }
 
         public int getNum() {
             return this.num;
@@ -22,8 +25,8 @@ public class Customer {
         public String getEmail() {
             return this.email;
         }
-        public String getRating() {
-            return this.rating;
+        public Level getLevel() {
+            return this.level;
         }
 
 }

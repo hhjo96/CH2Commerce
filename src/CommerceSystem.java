@@ -8,13 +8,11 @@ public class CommerceSystem {
     Map<Integer, Category> categoryMap = new HashMap<>();
     Map<Integer, Product> productMap = new HashMap<>();
     Customer customer;
-    ShoppingCart cart;
-    Order order;
+    Map<Integer, ShoppingCart> cartMap = new HashMap<>();
+    Map<Integer, Order> orderMap = new HashMap<>();
 
     public CommerceSystem(Customer customer) {
         this.customer = customer;
-        this.cart = null;
-        this.order = null;
 
     }
 
@@ -24,8 +22,8 @@ public class CommerceSystem {
     public Map<Integer, Category> getCategoryMap() {
         return this.categoryMap;
     }
-    public ShoppingCart getCart() {
-        return this.cart;
+    public Map<Integer, ShoppingCart> getCart() {
+        return this.cartMap;
     }
 
     public int intInputCheck(){ // 양수 숫자인지 체크
@@ -53,14 +51,21 @@ public class CommerceSystem {
 
             printCategoryList();
             //장바구니에 상품이 들어있으면 주문관리 출력, 없으면 안출력, 예외처리
-            if (cart != null && !cart.isEmpty()) { // 카트내역이 있을 때
+            if (cartMap.get(customer.getNum()) != null && !cartMap.get(customer.getNum()).isEmpty()) { // 카트내역이 있을 때
                 Printer.printOrderManage(); //'주문 관리'
                 Printer.printCartList(); // 4. 장바구니 확인
             }
             //주문내역이 있을 때
-            if(order != null && !order.isEmpty()){
+            boolean hasOrder = false;
+            for(Order order : orderMap.values()) {
+                if(order.getCustomer().getNum() == customer.getNum() && (order.getStatus().equals("done") || order.getStatus().equals("yet"))) { // 취소한 주문은 안보이게
+                    hasOrder = true;
+                    break;
+                }
+            }
+            if(hasOrder){ // order != null && !order.isEmpty()
                 //[ 주문 관리] 는 한번만 출력하기 위해 검사
-                if(cart == null || cart.isEmpty()) {
+                if(cartMap.get(customer.getNum()) == null || cartMap.get(customer.getNum()).isEmpty()) {
                     Printer.printOrderManage(); //'주문 관리'
                 }
                 Printer.printCancelOrder();// 5. 주문 취소
@@ -73,23 +78,29 @@ public class CommerceSystem {
                     Printer.printEnd();
                     return;
                 case 4:
-                    if (cart.isEmpty() || cart == null ) { // 장바구니 상품 없을 때
+                    ShoppingCart myCart = cartMap.get(customer.getNum());
+                    if (myCart == null || myCart.isEmpty()) { // 장바구니 상품 없을 때 -> 널이거나 empty
                         System.out.println("올바른 번호를 입력해주세요.");
                         break;
                     } else {// 장바구니 상품이 있을 때 장바구니 확인
-                        printCart();
+                        printCart(customer.getNum());
                         Printer.printOrderOrBack(); // 주문할지 뒤로가기할지 물어보기
                         int answer2 = intInputCheck();
 
                         if (answer2 == 1) {//1 주문확정
-                            order = new Order(customer, cart);
+                            //고객 등급 입력받아서
+                            System.out.println("고객 등급을 입력해주세요.(1/2/3/4)");
+                            Printer.printCustomerLevel();
+                            int customerLevel = intInputCheck();
+
+                            Level level = Level.getLevelValue(customerLevel);
+                            customer.setLevel(level);
+
+                            Order newOrder = new Order(customer, myCart);
                             //System.out.println("디버그: " + cart.getProducts().toString());
-                            order.toOrder();
-                            for (Map.Entry<Product, Integer> entry : cart.getProducts().entrySet()) {
-                                Product product = entry.getKey();
-                                System.out.println(product + " 재고가 " + product.getStock()+ "개로 업데이트되었습니다.");
-                            }
-                            cart.clear();
+                            newOrder.toOrder();
+                            orderMap.put(newOrder.getNum(), newOrder);
+                            myCart.clear();
                             continue;
                         } else if(answer2 == 2) { // 2 메인으로 돌아가기
                             System.out.println("메인으로 돌아갑니다. ");
@@ -100,14 +111,17 @@ public class CommerceSystem {
                         }
                     }
                 case 5: // 주문 취소
-                    if(order.isEmpty()) {
-                        System.out.println("올바른 번호를 입력해주세요.");
-                        break;
-                    }
                     System.out.print("취소할 주문의 주문번호를 입력해주세요: ");
                     int orderNum = intInputCheck();
-                    order.cancelOrder(orderNum);
-                    order.clear();
+                    Order cancelledOrder = orderMap.get(orderNum);
+
+                    if(cancelledOrder == null) {
+                        System.out.println("올바른 번호를 입력해주세요.");
+                        break;
+                    } else {
+                        cancelledOrder.cancelOrder(orderNum, this.sc);
+                        //orderMap.remove(orderNum);
+                    }
                     continue;
                 case 1, 2, 3: // 카테고리를 입력받은 경우
                     //해당 카테고리의 전체 상품 보여주기
@@ -131,8 +145,9 @@ public class CommerceSystem {
                             System.out.println("취소를 선택하셨습니다.");
                             break;
                         } else if (answer3 == 1) { // 1확인
-                            if(cart == null) {
-                                cart = new ShoppingCart(customer);
+                            if(cartMap.get(customer.getNum()) == null) { // 카트가 없는 경우
+                                myCart = new ShoppingCart(customer);
+                                cartMap.put(customer.getNum(), myCart);
                             }
 
                             if(selectedProduct.getStock() <= 0) {
@@ -140,7 +155,8 @@ public class CommerceSystem {
                                 break;
                             }
                             if(selectedProduct.getStatus()) {
-                                cart.putProductToCart(selectedProduct, 1);
+                                myCart = cartMap.get(customer.getNum());
+                                myCart.putProductToCart(selectedProduct, 1);
                                 System.out.println(selectedProduct.getName() + "가 장바구니에 추가되었습니다.");
                                 continue;
                             } else { // selectedProduct.status == false 인 경우
@@ -154,9 +170,9 @@ public class CommerceSystem {
                         }
                     }
                 case 6: // 관리자모드
+                    int i = 0;
                     while(true) {
-                        int i = 0;
-                        if(i == 3) break;
+                        if(i >= 3) break;
                         System.out.println("관리자 비밀번호를 입력해주세요: ");
                         String adminPassword = sc.nextLine();
                         if (adminPassword.equals("admin123")) {
@@ -223,11 +239,11 @@ public class CommerceSystem {
         Printer.printToCart(); // 위 상품을 장바구니에 추가하시겠습니까? 1확인 2취소
     }
 
-    public void printCart(){
+    public void printCart(int num){
         Printer.printCartDetail(); // 장바구니 내역
-        cart.printCart();
+        cartMap.get(num).printCart();
         Printer.printTotalPrice(); // 총 주문금액
-        System.out.println(cart.getTotalPrice()+ "원");
+        System.out.println(cartMap.get(num).getTotalPrice()+ "원");
     }
 
 }

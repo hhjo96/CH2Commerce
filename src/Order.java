@@ -1,7 +1,4 @@
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Order {
     private static int orderNum = 0;
@@ -9,8 +6,8 @@ public class Order {
     private Customer customer;
     private ShoppingCart cart;
     private Map<Product, Integer> products;
-    private int totalPrice;
-    private boolean status; //주문완료 전 0, 주문완료 1
+    private double totalPrice;
+    private String status; //"done": 주문 끝났음, "yet": 아직 주문 완료 안했음, "cancel": 취소함
 
 
     Order(Customer customer, ShoppingCart cart) { // 장바구니에서 받아서만 주문하도록 함.
@@ -20,21 +17,25 @@ public class Order {
         this.products = new HashMap<>();
         this.products.putAll(cart.getProducts());
         this.totalPrice = cart.getTotalPrice();
-        this.status = false;
+        this.status = "yet";
     }
 
     public int getNum() {
         return this.num;
     }
 
-    public boolean getStatus() {
+    public String getStatus() {
         return this.status;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setStatus(String status) {
+        if(status.equals("yet") || status.equals("done") || status.equals("cancel")){
+            this.status = status;
+        } else {
+            this.status = "yet";
+        }
     }
-    public int getTotalPrice() {
+    public double getTotalPrice() {
         return this.totalPrice;
     }
     public void setTotalPrice(int totalPrice) {
@@ -45,38 +46,42 @@ public class Order {
         return this.products;
     }
 
+    public Customer getCustomer() {
+        return this.customer;
+    }
 
     public void toOrder() {
         //주문시 주문완료 상태로 변경, 주문상품의 재고 줄이고, 카트 비우고, 가격 계산하기
-        int totalPrice = 0;
+        double totalPrice = 0;
         for (Map.Entry<Product, Integer> entry : this.getProducts().entrySet()) { // getProducts: Map<Product, Integer> 리턴하는 함수
             Product product = entry.getKey();
             int count = entry.getValue();
             product.minusStock(count); // 재고 줄이고
-            totalPrice += product.getPrice() * count; // 가격 계산하고
+            totalPrice = totalPrice + (product.getPrice() * count) * (1-(this.customer.getLevel().getLevel()/100.0));// 가격 계산하고
+            this.totalPrice = totalPrice;
         }
 
         //주문완료 상태로 변경
-        this.setStatus(true);
+        this.setStatus("done");
 
         //카트 비우고
-        Iterator<Map.Entry<Product, Integer>> it = cart.getProducts().entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<Product, Integer> entry = it.next();
-            if (entry.getValue() == 0) {
-                it.remove();   //
-            }
-
-
-        }
-
+        cart.getProducts().clear();
 
         cart.setTotalPrice(totalPrice);
-        System.out.println("주문이 완료되었습니다!" + "총 금액: " + cart.getTotalPrice() + "원, 주문번호: " + this.getNum());
+        System.out.println("주문이 완료되었습니다! " +
+                customer.getLevel() + "등급 할인율: " +
+                customer.getLevel().getLevel() + "%, 할인 후 가격: " +
+                cart.getTotalPrice() + "원, 주문번호: " + this.getNum());
+
+        for (Map.Entry<Product, Integer> entry : cart.getProducts().entrySet()) {
+            Product product = entry.getKey();
+            System.out.println(product + " 재고가 " + product.getStock()+ "개로 업데이트되었습니다.");
+        }
+
         cart = null;
     }
 
-    public void cancelOrder(int num) {
+    public void cancelOrder(int num, Scanner sc) {
 
 
         cart = new ShoppingCart(customer);
@@ -89,26 +94,37 @@ public class Order {
         }
 
         // 이미 취소된 주문 방지
-        if (!this.status) {
+        if (this.status.equals("cancel")) {
             System.out.println("이미 취소된 주문입니다.");
             return;
         }
 
-        // 주문 상품을 카트로 이동 + 재고 복구
-        for (Map.Entry<Product, Integer> entry : products.entrySet()) {
-            Product product = entry.getKey();
-            int count = entry.getValue();
+        System.out.println("정말 취소하시겠습니까?(y/n)");
+        String answer = sc.nextLine();
 
-            product.plusStock(count);// 재고 복구
-            cart.putProductToCart(product, count); // 카트로 복귀
+        if(answer.equalsIgnoreCase("y")) { //y 입력한경우 취소
+            // 주문 상품을 카트로 이동 + 재고 복구
+            for (Map.Entry<Product, Integer> entry : products.entrySet()) {
+                Product product = entry.getKey();
+                int count = entry.getValue();
+
+                product.plusStock(count);// 재고 복구
+                cart.putProductToCart(product, count); // 카트로 복귀
+            }
+
+            // 주문 객체(this) 초기화
+            this.products.clear();
+            this.totalPrice = 0;
+            this.status = "cancel";
+
+            System.out.println("주문이 취소되었습니다. 주문번호: " + num);
+            this.clear();
+
+        } else {
+            System.out.println("주문을 취소하지 않고 돌아갑니다.");
         }
 
-        // 주문 객체(this) 초기화
-        this.products.clear();
-        this.totalPrice = 0;
-        this.status = false;
 
-        System.out.println("주문이 취소되었습니다. 주문번호: " + num);
     }
 
     public void clear(){
@@ -116,7 +132,6 @@ public class Order {
             this.setTotalPrice(0);
             this.cart.clear();
             this.products.clear();
-            this.setStatus(false);
         }
     }
 
