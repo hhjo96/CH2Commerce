@@ -126,49 +126,11 @@ public class CommerceSystem {
                 case 1, 2, 3: // 카테고리를 입력받은 경우
                     //해당 카테고리의 전체 상품 보여주기
                     Category selectedCategory = categoryMap.get(answer1);
+                    //1전체상품 2백마넌이하 3백마넌초과 0종료
                     printSelectedCategoryProductList(selectedCategory);
-                    int answer2 = intInputCheck();
-                    //해당 상품의 상세내용
-                    if (answer2 == 0) {
-                        System.out.println("뒤로가기를 선택하셨습니다.");
-                        continue;
-                    }
-                    Product selectedProduct = selectedCategory.findProductByNum(answer2);
-                    if (selectedProduct == null) {
-                        System.out.println("올바른 번호를 입력해주세요.");
-                        break;
-                    } else {//위상품을 장바구니에 추가하시겠습니까? 1확인 2취소
-                        printAddToCart(selectedProduct);
-                        int answer3 = intInputCheck();
+                    continue;
 
-                        if (answer3 == 2) { // 2취소
-                            System.out.println("취소를 선택하셨습니다.");
-                            break;
-                        } else if (answer3 == 1) { // 1확인
-                            if(cartMap.get(customer.getNum()) == null) { // 카트가 없는 경우
-                                myCart = new ShoppingCart(customer);
-                                cartMap.put(customer.getNum(), myCart);
-                            }
 
-                            if(selectedProduct.getStock() <= 0) {
-                                System.out.println("재고가 부족합니다. 장바구니에 담을 수 없습니다.");
-                                break;
-                            }
-                            if(selectedProduct.getStatus()) {
-                                myCart = cartMap.get(customer.getNum());
-                                myCart.putProductToCart(selectedProduct, 1);
-                                System.out.println(selectedProduct.getName() + "가 장바구니에 추가되었습니다.");
-                                continue;
-                            } else { // selectedProduct.status == false 인 경우
-                                System.out.println("장바구니에 담을 수 없는 상품입니다.");
-                                continue;
-                            }
-
-                        } else {
-                            System.out.println("올바른 번호를 입력해주세요.");
-                            break;
-                        }
-                    }
                 case 6: // 관리자모드
                     int i = 0;
                     while(true) {
@@ -227,9 +189,50 @@ public class CommerceSystem {
 
     public void printSelectedCategoryProductList(Category selectedCategory){
         System.out.println("[ " + selectedCategory.getName() + " 카테고리 ]");
-        Printer.printMenu(); //행이름
-        Printer.printSelectedCategoryProductList(selectedCategory);//목록
-        Printer.printBackMenu();//0. 뒤로가기
+        Printer.printFilteringMenu(); // 1 전체상품보기 2 100마넌이하 3 100마넌초과 4 뒤로가기
+        int answer = intInputCheck();
+        int answer2;
+        Product selectedProduct;
+
+        switch(answer){
+            case 1: // 전체 상품 보기
+                Printer.printMenu(); //행이름
+                Printer.printSelectedCategoryProductList(selectedCategory);//목록
+                Printer.printBackMenu();//0. 뒤로가기
+                break;
+            case 2: // 100마넌이하
+                Printer.printMenu();
+                Printer.printSelectedCategoryUnderPriceList(selectedCategory);
+                Printer.printBackMenu();
+                break;
+            case 3: // 100마넌 초과
+                Printer.printMenu();
+                Printer.printSelectedCategoryOverPriceList(selectedCategory);
+                Printer.printBackMenu();
+                break;
+        }
+
+
+        //해당 상품 클릭시 해당 상품의 상세정보 출력
+        answer2 = intInputCheck();
+        //해당 상품의 상세내용
+        if (answer2 == 0) {
+            System.out.println("뒤로가기를 선택하셨습니다.");
+            return;
+        }
+        selectedProduct = selectedCategory.findProductByNum(answer2);
+
+        //입력했던 조건에 맞지 않는 상품 입력시 안담기
+        if(answer == 2 && selectedProduct.getPrice() > 1000000) {
+            System.out.println("목록에 없는 상품입니다.");
+            return;
+        } else if(answer == 3 && selectedProduct.getPrice() <= 1000000) {
+            System.out.println("목록에 없는 상품입니다.");
+            return;
+        }
+
+        putItemtoCart(this, selectedProduct); // 한개씩만 담으니까 개수는 필요없다
+
     }
 
     public void printAddToCart(Product selectedProduct){
@@ -246,4 +249,41 @@ public class CommerceSystem {
         System.out.println(cartMap.get(num).getTotalPrice()+ "원");
     }
 
+    public void putItemtoCart(CommerceSystem cs, Product p){
+
+        ShoppingCart myCart;
+        Product selectedProduct = p;
+        if (selectedProduct == null) {
+            System.out.println("올바른 번호를 입력해주세요.");
+
+        } else {//위상품을 장바구니에 추가하시겠습니까? 1확인 2취소
+            printAddToCart(selectedProduct);
+            int answer3 = intInputCheck();
+
+            if (answer3 == 2) { // 2취소
+                System.out.println("취소를 선택하셨습니다.");
+
+            } else if (answer3 == 1) { // 1확인
+                if(cartMap.get(customer.getNum()) == null) { // 카트가 없는 경우
+                    myCart = new ShoppingCart(customer);
+                    cartMap.put(customer.getNum(), myCart);
+                }
+
+                if(selectedProduct.getStock() <= 0) {
+                    System.out.println("재고가 부족합니다. 장바구니에 담을 수 없습니다.");
+                    return;
+                }
+                if(selectedProduct.getStatus()) {
+                    myCart = cartMap.get(customer.getNum());
+                    myCart.putProductToCart(selectedProduct, 1);
+                    System.out.println(selectedProduct.getName() + "가 장바구니에 추가되었습니다.");
+                } else { // selectedProduct.status == false 인 경우
+                    System.out.println("장바구니에 담을 수 없는 상품입니다.");
+                }
+
+            } else {
+                System.out.println("올바른 번호를 입력해주세요.");
+            }
+        }
+    }
 }
