@@ -6,6 +6,7 @@
 classDiagram
     direction TB
     class Product {
+        -static int productNum = 0;
         -int num
         -String name
         -int price
@@ -16,6 +17,7 @@ classDiagram
         
         +Product(String name, int price, String category, String description, int status, int stock)
         
+        +getNum: int
         +getName: String
         +getPrice: int
         +getCategory: String
@@ -23,12 +25,10 @@ classDiagram
         +getStatus: int
         +getStock: int
         
-        +plusStock: void
-        +minusStock: void
+        +plusStock(int count): void
+        +minusStock(int count): void
         
-        +getList: List<String>
-        
-        
+        +toString(): String
     }
     class Category {
         -int num
@@ -37,7 +37,7 @@ classDiagram
         
         +Category(String name)
         
-        +getList: List<String>
+        +toString(): String
     }
     class Customer {
         -int num
@@ -47,6 +47,7 @@ classDiagram
         -String rating
         
         +Customer(String name, String email)
+        
         
         +getName() : String
         +getEmail() : String
@@ -59,30 +60,39 @@ classDiagram
         -int num
         -String status
         -List<Product> products
-
-        +putProductToOrder(Product p): void
-        +deleteProduct(Product p): void
-        +getOrderList(): List<Product>
-        +orderProduct(): void
+        -Customer customer
+        -int totalPrice
+        -Customer customer
+        
+        +toOrder(Product p): void
+        +printOrderList(): void
         
     }
     class ShoppingCart {
         -int num
         -Customer customer
         -List<Product> products
+        -int totalPrice
         
         +printCart(): void
         +putProductToCart(Product p): void
         +deleteProduct(Product p): void
     }
     class CommerceSystem {
-        -List<Product> products
         -List<Category> categories
         -List<Customer> customers
         -List<Order> orders
         -List<ShoppingCart> shoppingCarts
         
         +start() : void
+
+        +getProductList: List<String>
+        +getCategoryList: List<String>
+        
+        +addCategory(Category c): void
+        +addCustomer(Customer c): void
+        +addOrder(Order o): void
+        +addShoppingCart(ShoppingCart sc): void
     }
     class Administrator {
         -CommerceSystem system
@@ -91,7 +101,10 @@ classDiagram
         +deleteProduct(Product p): void
  }
     
-
+class Printer {
+    -List<Product> list
+    +printList(List<Product> list): void
+}
 
 
 
