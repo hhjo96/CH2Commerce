@@ -108,4 +108,20 @@ public class Printer {
 
     }
 
+    public static void printFilteringMenu(){
+        System.out.println("1. 전체 상품 보기");
+        System.out.println("2. 가격대별 필터링(100만원 이하)");
+        System.out.println("3. 가격대별 필터링(100만원 초과)");
+        printBackMenu();
+    }
+
+    public static void printSelectedCategoryUnderPriceList(Category c){
+        List<Product> productList = c.getProducts();
+        productList.stream().filter(Product::getStatus).filter(p->p.getPrice() <= 1000000).forEach(System.out::println);
+    }
+
+    public static void printSelectedCategoryOverPriceList(Category c){
+        List<Product> productList = c.getProducts();
+        productList.stream().filter(Product::getStatus).filter(p->p.getPrice() > 1000000).forEach(System.out::println);
+    }
 }
